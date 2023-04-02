@@ -1,5 +1,16 @@
 # Chapter 02 -- 作業系統結構 (Operating-System Structures) #
 
+## Section Goals ##
+
+* 認識作業系統提供的服務
+* 說明系統呼叫如何提供作業系統服務
+* 比較和對比用於設計作業系統的單片、分層、微核心、模組和混合策略
+* 說明啟動作業系統的過程
+* 應用工具來監視作業系統性能
+* 設計和實現用於與 Linux 核心交互的核心模組
+
+## Section ##
+
 * [2.1 作業系統服務 (Operating-System Services)](#21-作業系統服務-operating-system-services)
 * [2.2 使用者與作業系統介面 (User and Operating-System Interface)](#22-使用者與作業系統介面-user-and-operating-system-interface)
 * [2.3 系統呼叫 (System Calls)](#23-系統呼叫-system-calls)

@@ -1,5 +1,17 @@
 # Chapter 08 -- 死結 (Deadlocks) #
 
+## Section Goals ##
+
+* 說明使用互斥鎖時如何發生死結
+* 定義發生死結的四個必要條件
+* 在資源分配圖中辨識別死結情況
+* 提出防止死結的四種不同方法
+* 應用銀行家演算法避免死結
+* 應用死結偵測演算法
+* 提出從死結中恢復的方法
+
+## Section ##
+
 * [8.1 系統模型 (System Model)](#81-系統模型-system-model)
 * [8.2 多執行緒應用程式中的死結 (Deadlock in Multithreaded Applications)](#82-多執行緒應用程式中的死結-deadlock-in-multithreaded-applications)
 * [8.3 死結的特性 (Deadlock Characterization)](#83-死結的特性-deadlock-characterization)

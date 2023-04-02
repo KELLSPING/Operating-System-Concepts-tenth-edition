@@ -1,5 +1,14 @@
 # Chapter 06 -- 同步工具 (Synchronization Tools) #
 
+## Section Goals ##
+
+* 描述臨界區間問題，並說明競爭狀況
+* 透過記憶體屏障、比較和交換操作和原子變數來進行關於臨界區間問題的硬體答案
+* 使用互斥鎖、號誌、監控器和條件變數解決臨界區間問題
+* 評估解決低、中度和高競爭的方案
+
+## Section ##
+
 * [6.1 背景 (Background)](#61-背景-background)
 * [6.2 臨界區間問題 (The Critical-Section Problem)](#62-臨界區間問題-the-critical-section-problem)
 * [6.3 Peterson 解決問題 (Peterson’s Solution)](#63-peterson-解決問題-petersons-solution)

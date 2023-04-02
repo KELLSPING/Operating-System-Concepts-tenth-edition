@@ -1,5 +1,14 @@
 # Chapter 16 -- 安全 (Security) #
 
+## Section Goals ##
+
+* 討論安全的威脅和攻擊
+* 解釋基本的加密、認證和雜湊法
+* 檢視密碼在運算上的使用
+* 描述因應安全攻擊的各種對策
+
+## Section ##
+
 * [16.1 安全問題 (The Security Problem)](#161-安全問題-the-security-problem)
 * [16.2 程式威脅 (Program Threats)](#162-程式威脅-program-threats)
 * [16.3 系統和網路威脅 (System and Network Threats)](#163-系統和網路威脅-system-and-network-threats)

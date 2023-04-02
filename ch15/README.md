@@ -1,5 +1,13 @@
 # Chapter 15 -- 檔案系統內部 (File-System Internals) #
 
+## Section Goals ##
+
+* 深入研究檔案系統及其建置的細節
+* 探索啟動程式和檔案分享
+* 以 NFS 為例，描述遠端檔案系統
+
+## Section ##
+
 * [15.1 檔案系統 (File Systems)](#151-檔案系統-file-systems)
 * [15.2 檔案系統掛載 (File-System Mounting)](#152-檔案系統掛載-file-system-mounting)
 * [15.3 分割和掛載 (Partitions and Mounting)](#153-分割和掛載-partitions-and-mounting)

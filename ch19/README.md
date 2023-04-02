@@ -1,5 +1,14 @@
 # Chapter 19 -- 網路與分散式系統 (Network and Distributed Systems) #
 
+## Section Goals ##
+
+* 解釋網路和分散式系統的優點
+* 提供互連分散式系統的網路的高層級概述
+* 定義現金使用的分散式系統的角色和類型
+* 討論有關分散式檔案系統設計的問題
+
+## Section ##
+
 * [19.1 分散式系統的優點 (Advantages of Distributed Systems)](#191-分散式系統的優點-advantages-of-distributed-systems)
 * [19.2 網路結構 (Network Structure)](#192-網路結構-network-structure)
 * [19.3 通信結構 (Communication Structure)](#193-通信結構-communication-structure)

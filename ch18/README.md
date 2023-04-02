@@ -1,5 +1,15 @@
 # Chapter 18 -- 虛擬機 (Virtual Machines) #
 
+## Section Goals ##
+
+* 探索虛擬機的歷史和優勢
+* 討論各種虛擬機技術
+* 描述用於實現虛擬化的方法
+* 最常見支援虛擬化功能的硬體功能分類，以及說明它們如何被作業系統使用
+* 討論當前的虛擬化研究領域
+
+## Section ##
+
 * [18.1 概要 (Overview)](#181-概要-overview)
 * [18.2 歷史 (History)](#182-歷史-history)
 * [18.3 優點和特點 (Benefits and Features)](#183-優點和特點-benefits-and-features)

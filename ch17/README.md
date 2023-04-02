@@ -1,5 +1,14 @@
 # Chapter 17 -- 保護 (Protection) #
 
+## Section Goals ##
+
+* 討論現代電腦系統中保護的目標和原則
+* 說明保護領域與存取矩陣的組合如何用於指定行程可能存取的資源
+* 檢查基於功能和語言的保護系統
+* 描述保護機制如何減輕系統攻擊
+
+## Section ##
+
 * [17.1 保護的目的 (Goals of Protection)](#171-保護的目的-goals-of-protection)
 * [17.2 保護的原則 (Principles of Protection)](#172-保護的原則-principles-of-protection)
 * [17.3 保護環 (Protection Rings)](#173-保護環-protection-rings)

@@ -1,5 +1,13 @@
 # Chapter 12 -- 輸入/輸出系統 (I/O Systems) #
 
+## Section Goals ##
+
+* 探討作業系統 I/O 子系統的結構
+* 討論 I/O 硬體的原則和複雜性
+* 解釋 I/O 硬體和軟體方面的效能
+
+## Section ##
+
 * [12.1 概觀 (Overview)](#121-概觀-overview)
 * [12.2 I/O 硬體 (I/O Hardware)](#122-io-硬體-io-hardware)
 * [12.3 應用 I/O 介面 (Application I/O Interface)](#123-應用-io-介面-application-io-interface)
