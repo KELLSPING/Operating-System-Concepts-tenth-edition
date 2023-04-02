@@ -1,5 +1,17 @@
 # Chapter 05 -- CPU 排班 (CPU Scheduling) #
 
+## Section Goals ##
+
+* 描述各種 CPU 排班演算法
+* 根據排班標準評估 CPU 排班演算法
+* 解釋多處理器和多核心排班相關的問題
+* 描述各種即時排班演算法
+* 描述 Windows、Linux 和 Solaris 作業系統中使用的排班演算法
+* 應用模型和模擬來評估 CPU 排班演算法
+* 設計一個流程實現幾種不同的 CPU 排班演算法
+
+## Section ##
+
 * [5.1 基本觀念 (Basic Concepts)](#51-基本觀念-basic-concepts)
 * [5.2 排班原則 (Scheduling Criteria)](#52-排班原則-scheduling-criteria)
 * [5.3 排班演算法 (Scheduling Algorithms)](#53-排班演算法-scheduling-algorithms)

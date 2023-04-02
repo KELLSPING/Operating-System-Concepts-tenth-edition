@@ -1,5 +1,15 @@
 # Chapter 01 -- 概說 (Introduction) #
 
+## Section Goals ##
+
+* 描述電腦系統的基本組織和中斷扮演的角色
+* 描述現代多處理器電腦系統中的各項元件
+* 圖形闡釋從使用者模式到核心模式的轉換
+* 探討作業系統如何被使用在各種計算環境中
+* 提供免費及開放原始碼作業系統之範例
+
+## Section ##
+
 * [1.1 作業系統做什麼 (What Operating Systems Do)](#11-作業系統做什麼-what-operating-systems-do)
 * [1.2 電腦系統組織 (Computer-System Organization)](#12-電腦系統組織-computer-system-organization)
 * [1.3 電腦系統架構 (Computer-System Architecture)](#13-電腦系統架構-computer-system-architecture)

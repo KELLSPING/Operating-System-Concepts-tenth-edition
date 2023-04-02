@@ -1,5 +1,14 @@
 # Chapter 11 -- 大量儲存器結構 (Mass-Storage Structure) #
 
+## Section Goals ##
+
+* 描述各種輔助儲存器的實體結構，以及裝置結構對其使用的影響
+* 說明大量儲存器的效能特性
+* 評估 I/O 排班演算法
+* 討論作業系統提供大量儲存器的服務，包括 RAID
+
+## Section ##
+
 * [11.1 大量儲存器結構的概觀 (Overview of Mass-Storage Structure)](#111-大量儲存器結構的概觀-overview-of-mass-storage-structure)
 * [11.2 硬碟排班 (HDD Scheduling)](#112-硬碟排班-hdd-scheduling)
 * [11.3 NVM 排班 (NVM Scheduling)](#113-nvm-排班-nvm-scheduling)

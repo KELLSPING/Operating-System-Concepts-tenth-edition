@@ -1,5 +1,14 @@
 # Chapter 20 -- Linux 系統 (The Linux System) #
 
+## Section Goals ##
+
+* 探討 UNIX 作業系統的歷史，從而導出 Linux ，而 Linux 的設計也是根據此原理
+* 檢視 Linux 行程和執行緒模型，並說明 Linux 如何排班執行緒和提供行程間的通信
+* 檢視 Linux 的記憶體管理
+* 探討 Linux 如何製作檔案系統和管理 I/O 裝置
+
+## Section ##
+
 * [20.1 Linux 歷史 (Linux History)](#201-linux-歷史-linux-history)
 * [20.2 設計原理 (Design Principles)](#202-設計原理-design-principles)
 * [20.3 核心模組 (Kernel Modules)](#203-核心模組-kernel-modules)

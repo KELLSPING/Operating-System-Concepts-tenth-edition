@@ -1,5 +1,14 @@
 # Chapter 14 -- 檔案系統的製作 (File-System Implementation) #
 
+## Section Goals ##
+
+* 描述製作區域檔案系統和目錄架構的細節
+* 討論區塊分配和配置區塊演算法及權衡
+* 看看檔案是如何從系統錯誤中恢復
+* 將 WAFL 檔案系統描述為一個具體範例
+
+## Section ##
+
 * [14.1 檔案系統結構 (File-System Structure)](#141-檔案系統結構-file-system-structure)
 * [14.2 檔案系統製作 (File-System Operations)](#142-檔案系統製作-file-system-operations)
 * [14.3 目錄製作 (Directory Implementation)](#143-目錄製作-directory-implementation)
