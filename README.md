@@ -1,6 +1,5 @@
 # Operating System Concepts, 10/e #
 
-
 ## Summary ##
 
 * Class Name: 11001 NTHU 資訊工程學系 周志遠教授 作業系統
