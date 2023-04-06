@@ -129,9 +129,128 @@ hybrid strategies for designing operating systems.
 
 ## 2.6 為什麼應用程式是特定作業系統 (Why Applications Are Operating-System Specific) ##
 
+* 基本上，在一個作業系統上編譯的應用程式並不能在其他作業系統上執行。
+  * 舊時代，使選擇作業系統，因為在指定的作業系統上，才有需要的功能。
+  * 現今，使執行選擇想使用的應用程式，因為現在的應用程式已實現跨平台的使用。
+* 3 種方式，讓應用程式可以在多個作業系統上運行
+  * 使用直譯語言 (ex. Python, Ruby)，該語言有可執行在多個作業系統的直譯器。
+  * 使用包含正在運行應用程式的虛擬機 (Virtual Machine, VM) 的語言來撰寫應用程式。虛擬機是該語言完整運行環境 (Run-Time Env, RTE) 的一部分。
+  * 應用程式開發人員可以使用標準語言或 API，在編譯器可以使用機器碼和作業系統中特定的語言生成二進制檔案。
+
 ## 2.7 作業系統的設計和製作 (Operating-System Design and Implementation) ##
 
+* 設計目標
+  * 使用者目的 (User Goal)
+  * 系統目的 (System Goal)
+* 機制與策略
+  * 機制 (Mechanism) 和 策略 (Policy) 分離。
+    * 策略決定做甚麼工作
+    * 機制決定如何做某些工作
+    * (p.s. 策略與機制 之於 架構與流程 的關係)
+* 製作
+  * 早期的作業系統是由組合語言寫成的。現在，大部分是用高階語言 (ex. C, C++) 寫成。
+    * 最低層核心的程式:使用組合語言與 C 完成。
+    * 高級別的常式:使用 C 和 C++ 撰寫。
+    * 系統程式庫:用 C++ 甚至更高級別的語言編寫。
+  * Android 系統
+    * 核心 (Kernal or OS):使用 C 和某種組合語言編寫。
+    * 系統程式庫:使用 C 或 C++ 編寫的。
+    * 應用程式的框架, 系統提供開發人員介面:主要使用 Java 撰寫的。
+  * 使用高階語言製作作業系統的唯一缺點，是降低速度和增加儲存需求。
+  * 性能的改進，可以從較好的資料結構與演算法著手，並非只能單獨由優越的組合語言碼所達成。
+  * 龐大的作業系統中，高性能關鍵的常式
+    * 中斷處理程式
+    * I/O 管理程式
+    * 記憶體管理
+    * CPU 排班
+  * 系統在寫完及正確地工作之後，可以標出瓶頸的常式，並以等效地組合語言替換重構，以更有效地執行。
+
 ## 2.8 作業系統結構 (Operating-System Structure) ##
+
+* 單一結構 (Monolithic Structure)
+  * 為緊密耦合 (tightly coupled) 系統，因為對系統某一部分的更改，可能造成其它部份產生廣泛的影響。
+  * 將核心的所有功能放到一個在單個位址空間中執行的靜態二進制檔案中。
+  * 原始 UNIX 作業系統式這種有限架構的一個範例，分為核心與系統程式。
+    * 核心
+      1. 位於系統呼叫介面之下，於實體硬體之上層。
+      2. 一系列界面和裝置驅動程式，包括檔案系統、CPU 排程、記憶體管理、和通過系統呼叫確定的其他作業系統功能。
+  * Linux 作業系統是基於 UNIX 並且結構相類似。
+    * 應用程式與核心的系統呼叫介面通信時，通常使用 glibc 的標準 C 程式庫。
+    * Linux 核心在單個位址空間中，完全以核心模式進行，是單一結構。
+  * 優勢
+    * 系統呼叫介面的成本低
+    * 核心內部的通信速度很快
+  * 缺點
+    * 難以實現與擴展
+
+<div style="text-align:center">
+  <img src="img/02_12-traditional_unix_system_structure.png" alt= “02_12-traditional_unix_system_structure” width="55%">
+  <p>傳統的 UNIX 系統結構</p>
+</div>
+
+<div style="text-align:center">
+  <img src="img/02_13-linux_system_structure.png" alt= “02_13-linux_system_structure” width="30%">
+  <p>Linux 系統結構</p>
+</div>
+
+* 分層方法
+  * 為鬆散耦合 (loosely coupled) 系統。
+  * 系統模組化最常應用的是分層方式 (layered approach)。
+  * 分層方式
+    * 底部層 (第 0 層):硬體
+    * 最高層 (第 N 層):使用者介面
+    * 作業系統層 (第 M 層)
+      1. 抽象物件的實現，負責資料和處理資料的操作。
+      2. 包括資料結構和一組可讓較高層次呼叫的一組函數，也可以呼叫低層次的操作。
+  * 層次選定後，每一層都只能使用較低層的功能與服務，方便作系統的除錯與驗證。
+
+<div style="text-align:center">
+  <img src="img/02_14-a_layered_operating_system.png" alt= “02_14-a_layered_operating_system” width="40%">
+  <p>分層作業系統</p>
+</div>
+
+* 微核心 (Microkernal)
+  * 將核心模組化
+  * 藉由移去核心所有非必較的元件，將作業系統結構化，並且改以系統和使用者層次的程式來製作。
+  * 通常只包含最少的行程和記憶體管理，以及一些通信功能。
+
+<div style="text-align:center">
+  <img src="img/02_15-architecture_of_a_typical_microkernel.png" alt= “02_15-architecture_of_a_typical_microkernel” width="70%">
+  <p>典型微核心的架構</p>
+</div>
+
+* 模組 (Modules)
+  * 目前作業系統罪的設計方法是使用可載入的核心模組 (Loadable Kernal Module, LKM)。
+  * 核心有一組主要的原件，在啟動時間或執行時間動態地連接額外的服務。
+  * 核心提供主要的服務，而其它的服務則在核心執行時動態的被製作。
+  * 動態地連接服務要比直接將新特性加入核心來的好，因為在每次改變後，都會要求重新編譯核心。
+  * 整體的結果就像分層的系統，每一核心部分有定義好和保護的介面；但是它比分層系統更有彈性，因為任何模組都可以呼叫其它模組。
+  * 作法與微核心很相似，因為主要的模組只有核心功能，以及如何和載入、如何和其它模組溝通的知識。
+  * 因為模組不需要像微核心一樣引用訊息傳遞做溝通，所以更有效率。
+
+* 混合系統
+  * 組合不同的架構產生混合系統，以強調性能、安全和可用性等議題。
+  * macOS 和 iOS
+    * 各層級說明
+      1. 使用者體驗:該層定義了允續使用者與計算設備間進行交談，像是 macOS 的 Aqua 和 iOS 的 Springboard。
+      2. 應用程式框架層:該層包括 Cocoa 和 Cocoa Touch 框架，它們為 Objective-C 和 Swift 語言提供了 API。
+      3. 核心框架:該層定義了支持圖形和多媒體的框架，包括 Quicktime 和 OpenGL。
+      4. 核心環境:這種環境也稱為達爾文 (Darwin)，包括 Mach 微核心和 BSD UNIX 核心。
+  * 達爾文是一個分層的混合系統，主要由 Mach 微核心 和 BSD UNIX 核心組成。
+    * 多數作業系統提供核心單一結構系統呼叫介面；達爾文提供了兩個系統呼叫介面
+      1. Mach 系統呼叫:稱為陷阱 (trap)。
+      2. BSD 系統呼叫:提供 POSIX 功能。
+  * Android
+
+<div style="text-align:center">
+  <img src="img/02_16-architecture_of_macOS_and_iOS_operating_systems.png" alt= “02_16-architecture_of_macOS_and_iOS_operating_systems” width="40%">
+  <p>Apple 的 macOS 和 iOS 作業系統的體系結構</p>
+</div>
+
+<div style="text-align:center">
+  <img src="img/02_17-the_structure_of_darwin.png" alt= “02_17-the_structure_of_darwin” width="30%">
+  <p>達爾文架構</p>
+</div>
 
 ## 2.9 構建和啟動作業系統 (Building and Booting an Operating System) ##
 
