@@ -241,6 +241,11 @@ hybrid strategies for designing operating systems.
       1. Mach 系統呼叫:稱為陷阱 (trap)。
       2. BSD 系統呼叫:提供 POSIX 功能。
   * Android
+    * Android 設備的軟體設計人員使用 Java 語言開發應用程式，通常不使用標準的 Java API，而是使用一個單獨 Google 為 Java 開發設計的 Android API。
+    * Android RunTime (ART)
+      1. 是一種在 Android 作業系統上的執行環境。
+      2. ART能夠把應用程式的位元組碼轉換為機器碼，是Android所使用的一種新的虛擬機器。
+      3. ART 採用提前 (Ahead-of-time, AOT)技術，相較於即時編譯 (Just-in-time compilation, JIT)，ART 改善了效能、垃圾回收（Garbage Collection）、應用程式出錯以及效能分析。
 
 <div style="text-align:center">
   <img src="img/02_16-architecture_of_macOS_and_iOS_operating_systems.png" alt= “02_16-architecture_of_macOS_and_iOS_operating_systems” width="40%">
@@ -252,8 +257,74 @@ hybrid strategies for designing operating systems.
   <p>達爾文架構</p>
 </div>
 
+<div style="text-align:center">
+  <img src="img/02_18-architecture_of_google_android.png" alt= “02_18-architecture_of_google_android” width="35%">
+  <p>Google 的 Android 架構</p>
+</div>
+
 ## 2.9 構建和啟動作業系統 (Building and Booting an Operating System) ##
+
+* 作業系統產生
+  * 從頭開始建構 OS 的步驟
+    1. 撰寫 OS source code (或 獲取已編寫的 source code)
+    2. 為將在其上執行的系統配置作業系統
+    3. compile OS
+    4. install OS
+    5. 初始化電腦及其新的 OS
+
+  * 將作業系統完全編譯，稱為系統構建 (System build)。
+
+* 系統啟動
+
+  * 啟動過程
+    1. 核心定位程式碼，可成為啟動程式 (bootstrap program), 啟動載入器 (boot loader) 或 bootstrap loader。
+    2. 將核心載入到記憶體中並啟動。
+    3. 核心初始化電腦。
+    4. 掛載根檔案系統。
+
+  * 通過載入核心啟動電腦的過程，稱為啟動系統。
+
+  * 最近的許多電腦使用統一可延伸韌體介面 (Unified Extensible Firmware Interface, UEFI) 代替了基於 BIOS 的啟動行程。
+
+  * GNU GRUB 是一個用於 Linux 和 UNIX 系統的開源啟動程式。
+
+  * Bootloader 作用
+    * 將 kernal 載入到記憶體中
+    * 硬體初始化
 
 ## 2.10 作業系統除錯 (Operating-System Debugging) ##
 
+* 廣義定義
+  1. 除錯 (debugging) 是發現和修正系統中硬體與軟體錯誤的活動。
+  2. 除錯包括性能調整 (performance tuning)，因為性能的問題是缺陷，藉由移除發生在系統中處理的瓶頸 (bottleneck) 來改善性能。
+
+* 失敗分析
+  * 錯誤種類
+    1. 核心錯誤:稱作當機 (crash)
+    2. 行程錯誤:錯誤資訊會被記錄到記錄檔案 (log file)，同時記憶體狀態會被儲存到檔機轉儲 (crash dump)。
+
+* 性能監控和調整
+  * 藉由移除發生在系統中處理的瓶頸來尋求性能的改善。為了確認瓶頸，我們必須能夠監視系統性能，因此作業系統比需有某些計算和顯示系統行為的量測方法。
+  * 工具
+    * 作用:使用工具，提供依據每一行程或全系統的觀察。
+    * 種類
+      1. 計數器: OS 經由一系列計數器來追蹤系統活動，ex. 建立系統的檔案數量、對網路設備或磁碟執行的操作數量
+      2. 追蹤:收集特定事件的數據， ex. 系統呼叫中，呼叫所包含的步驟。
+
+* BCC
+  * BCC 是 BPF 編譯器集合 (BPF Compiler Collection)。
+  * Linux 中，用於動態核心追蹤的工具包。
+  * 須理解使用者層級程式碼與核心程式碼，並能夠檢測它們之間交互作用的工具集。
+
 ## 2.11 摘要 (Summary) ##
+
+* OS 提供使用者和程式用於程式執行環境的服務。
+* 系統呼叫為 OS 提供的服務提供介面。程式設計師使用 System call 的 API 系統存取系統呼叫服務。
+* 系統呼叫分為 6 大類:
+  1. 行程控制
+  2. 檔案管理
+  3. 設備管理
+  4. 訊息維護
+  5. 通信
+  6. 保護
+* 標準的 C 程式庫為 UNIX 和 Linux 系統提供系統呼叫介面。
