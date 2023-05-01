@@ -70,22 +70,22 @@ interprocess communication.
     * 多執行緒:可以並行地執行。
 
 <div style="text-align:center">
-    <img src="img/03_01-layout_of_a_process_in_memory.png" alt= “03_01-layout_of_a_process_in_memory” width="25%">
+    <img src="../img/03_01-layout_of_a_process_in_memory.png" alt= “03_01-layout_of_a_process_in_memory” width="25%">
     <p>行程在記憶體中的配置</p>
 </div>
 
 <div style="text-align:center">
-    <img src="img/03_01-layout_of_a_process_in_memory_2.png" alt= “03_01-layout_of_a_process_in_memory_2” width="70%">
+    <img src="../img/03_01-layout_of_a_process_in_memory_2.png" alt= “03_01-layout_of_a_process_in_memory_2” width="70%">
     <p>記憶體的配置</p>
 </div>
 
 <div style="text-align:center">
-    <img src="img/03_02-diagram_of_process_state.png" alt= “03_02-diagram_of_process_state.png” width="60%">
+    <img src="../img/03_02-diagram_of_process_state.png" alt= “03_02-diagram_of_process_state.png” width="60%">
     <p>行程狀態圖</p>
 </div>
 
 <div style="text-align:center">
-    <img src="img/03_03-process_control_block.png" alt= “03_03-process_control_block.png” width="20%">
+    <img src="../img/03_03-process_control_block.png" alt= “03_03-process_control_block.png” width="20%">
     <p>行程控制表</p>
 </div>
 
@@ -113,17 +113,17 @@ interprocess communication.
   * 一般而言，無論在核心模式或使用者模式，我們執行目前 CPU 狀態的狀態儲存 (state save)，然後還原狀態 (state restore)來恢復作業。
 
 <div style="text-align:center">
-    <img src="img/03_04-the_ready_queue_and_wait_queues.png" alt= “03_04-the_ready_queue_and_wait_queues.png” width="60%">
+    <img src="../img/03_04-the_ready_queue_and_wait_queues.png" alt= “03_04-the_ready_queue_and_wait_queues.png” width="60%">
     <p>就緒佇列和等待佇列</p>
 </div>
 
 <div style="text-align:center">
-    <img src="img/03_05-queueing_diagram_representation_of_process_scheduling.png" alt= “03_05-queueing_diagram_representation_of_process_scheduling” width="60%">
+    <img src="../img/03_05-queueing_diagram_representation_of_process_scheduling.png" alt= “03_05-queueing_diagram_representation_of_process_scheduling” width="60%">
     <p>行程排班的佇列圖表示</p>
 </div>
 
 <div style="text-align:center">
-    <img src="img/03_06-diagram_showing_context_switch_from_process_to_process.png" alt= “03_06-diagram_showing_context_switch_from_process_to_process” width="55%">
+    <img src="../img/03_06-diagram_showing_context_switch_from_process_to_process.png" alt= “03_06-diagram_showing_context_switch_from_process_to_process” width="55%">
     <p>CPU 在行程之間內容轉換</p>
 </div>
 
@@ -139,7 +139,7 @@ interprocess communication.
   *
 
 <div style="text-align:center">
-    <img src="img/03_07-a_tree_of_processes_on_a_typical_linux_system.png" alt= “03_07-a_tree_of_processes_on_a_typical_linux_system” width="70%">
+    <img src="../img/03_07-a_tree_of_processes_on_a_typical_linux_system.png" alt= “03_07-a_tree_of_processes_on_a_typical_linux_system” width="70%">
     <p>典型的 Linux 系統的行程樹</p>
 </div>
 
@@ -161,7 +161,7 @@ interprocess communication.
   2. 訊息傳遞 (message passing)
 
 <div style="text-align:center">
-  <img src="img/03_11-communications_models_a_shared memory_b_message_passing.png" alt= “03_11-communications_models_a_shared memory_b_message_passing” width="50%">
+  <img src="../img/03_11-communications_models_a_shared memory_b_message_passing.png" alt= “03_11-communications_models_a_shared memory_b_message_passing” width="50%">
   <p>通信模式。(a)共用記憶體 (b)訊息傳遞</p>
 </div>
 
@@ -232,7 +232,7 @@ interprocess communication.
   * 低層次通信式 : 一連串沒有結構的位元組。為資料加上結構是客戶端和伺服器應用程式的責任。
 
 <div style="text-align:center">
-  <img src="img/03_26-communication_using_sockets.png" alt= “03_26-communication_using_sockets” width="40%">
+  <img src="../img/03_26-communication_using_sockets.png" alt= “03_26-communication_using_sockets” width="40%">
   <p>使用插座的通信</p>
 </div>
 
