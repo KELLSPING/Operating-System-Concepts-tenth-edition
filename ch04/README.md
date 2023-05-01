@@ -158,6 +158,24 @@
 
 ## 4.5 隱式執行緒 (Implicit Threading) ##
 
+* 設計多執行緒程式的 4 種方法
+  1. 執行緒池
+  2. Fork-Join
+  3. OpenMP
+  4. Grand Central Dispatch
+
+### 4.5.1 執行緒池 (thread pool) ###
+
+* 多執行緒伺服器潛在的問題
+  1. 關係到產生執行緒需要的時間量，還有當執行緒完成時將被捨棄的事實。
+  2. 對系統的執行緒沒有設定上限時，可能耗盡資源，如 CPU 時間或記憶體。
+
+### 4.5.2 Fork-Join ###
+
+### 4.5.3 OpenMP ###
+
+### 4.5.4 Grand Central Dispatch ###
+
 ## 4.6 執行緒的事項 ( Threading Issues) ##
 
 ## 4.7 作業系統範例 (Operating-System Examples) ##
