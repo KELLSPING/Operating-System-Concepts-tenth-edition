@@ -73,7 +73,88 @@
 
 ## 4.3 多執行緒模式 (Multithreading Models) ##
 
+* 使用者執行緒 (user thread) : 使用者執行緒的支援是在核心之上，而且在沒有核心支援下管理。
+* 核心執行緒 (kernal thread) : 核心執行緒直接交由作業系統支援和管理。
+* 上述兩種模式必定存在關聯性。
+
+<div style="text-align:center">
+    <img src="../img/0406 - User and kernel threads.png" alt= "0406 - User and kernel threads.png" width="40%">
+    <p>使用者與核心執行緒</p>
+</div>
+
+### 4.3.1 多對一模式 (Many-to-One Model) ###
+
+* 將許多個使用者層級的執行緒映設到一個核心執行緒。
+* 執行緒的管理在使用者空間的執行緒程式庫執行，很有效率。
+* 其中一個執行緒呼叫一個暫停的系統呼叫時，整個行程就會暫停。
+* 一次只有一個執行緒可以存取核心，數個執行緒不能在多核心系統上平行的執行。
+
+<div style="text-align:center">
+    <img src="../img/0407 - Many-to-one model.png" alt= "0407 - Many-to-one model.png" width="40%">
+    <p>多對一模式</p>
+</div>
+
+### 4.3.2 一對一模式 (One-to-One Model) ###
+
+* 將每一個使用者執行緒映射到一個核心執行緒。
+* Linux 和 Windows 作業系統的家族都實作一對一模式。
+* 缺點是產生使用者執行緒時，就要產生相對應的核心執行緒。
+
+<div style="text-align:center">
+    <img src="../img/0408 - One-to-one model.png" alt= "0408 - One-to-one model.png" width="40%">
+    <p>一對一模式</p>
+</div>
+
+### 4.3.3 多對多模式 (Many-to-Many Model) ###
+
+* 將許多使用者執行緒映射到較少或相等數目的核心執行緒。
+* 核心執行緒的數目對於某一特殊應用或是某個特定機器可能是一特定數目。 (一個應用可能在八個核心上比在四個核心的系統上分配更多的核心執行緒)
+* 雖然此模式具備彈性，實際上卻很難實現。
+* 隨著處理核心數量不斷增加，核心執行緒的數量已變得不那麼重要。因為現在大多數的作業系統都使用一對一模式。
+
+<div style="text-align:center">
+    <img src="../img/0409 - Many-to-many model.png" alt= "0409 - Many-to-many model.png" width="40%">
+    <p>多對多模式</p>
+</div>
+
+* 變形
+  * 二層模式 (two-level model) : 多重發送多個使用者層級的執行緒到一個較小或箱等數目的核心執行緒，但也允許使用者層級的執行緒被連結一個核心執行緒。
+
+<div style="text-align:center">
+    <img src="../img/0410 - Two-level model.png" alt= "0410 - Two-level model.png" width="40%">
+    <p>兩層模式</p>
+</div>
+
 ## 4.4 執行緒程式庫 (Thread Libraries) ##
+
+* 執行緒程式庫 (thread library) 提供程式設計師一個 API 來產生和管理執行緒。
+* 製作執行緒程式庫的兩種方法
+  1. 在使用者空間提供完整的程式庫，完全沒有核心的支援。
+  2. 直接由作業系統支援的核心層級程式庫。
+* 今日 3 個主要使用的執行緒程式庫
+  1. POSIX Pthreads
+  2. Windows
+  3. Java
+* 在 Windows 系統中，Java 執行緒通常使用 Windows API 製作；UNIX、Linux 和 macOS 系統通常使用 Pthreads。
+* 2 種產生執行緒的一般方法
+  * 非同步執行緒 (asynchronous threading) : 父執行緒和子執行緒可以同時並行地執行且彼此獨立。因為彼此獨立，通常執行緒間很少有資料共用。
+  * 同步執行緒 (synchronous threading) : 父執行緒必須等待所有的子執行緒結束，然後才能恢復執行。通常同步執行緒牽涉到執行期間的共用資料。
+
+### 4.4.1 Pthreads ###
+
+* Pthreads 參考 POSIX 標準定義執行緒產生的 API 。
+* Pthreads 是執行緒行為的規格。
+
+### 4.4.2 Windows 執行緒 ###
+
+* 使用 Windows API 時，必須包含 windows.h 的標頭檔。
+
+### 4.4.3 Java 執行緒 ###
+
+* Java 程式至少包含一個單執行緒控制 - 即使只包含一個 main() 方法的 Java 程式，也是以一個單執行緒在 JVM 下執行 。
+* 有兩種方法產生執行緒
+  1. 繼承自 Thread 類別所產生的新類別，並且覆蓋 Thread 類別 run() 的方法 。
+  2. 定義一個製作 Runnable 介面的類別，該介面定義了一個抽象的簽署方法為 public void run() 。
 
 ## 4.5 隱式執行緒 (Implicit Threading) ##
 
