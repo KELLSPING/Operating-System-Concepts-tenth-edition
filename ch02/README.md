@@ -33,7 +33,7 @@ hybrid strategies for designing operating systems.
 ## 2.1 作業系統服務 (Operating-System Services) ##
 
 <div style="text-align:center">
-    <img src="img/02_01-operating_system_services.png" alt= “02_01-operating_system_services” width="70%">
+    <img src="../img/02_01-operating_system_services.png" alt= “02_01-operating_system_services” width="70%">
 </div>
 
 * 使用者介面 (User Interface, UI)
@@ -115,7 +115,7 @@ hybrid strategies for designing operating systems.
 ## 2.5 鏈結器與載入器 (Linkers and Loaders) ##
 
 <div style="text-align:center">
-    <img src="img/02_11-linker_and_loader.png" alt= “02_11-linker_and_loader” width="45%">
+    <img src="../img/02_11-linker_and_loader.png" alt= “02_11-linker_and_loader” width="45%">
 </div>
 
 * 可重定位物件檔案 (Relocatable Object File, .o file)
@@ -184,12 +184,12 @@ hybrid strategies for designing operating systems.
     * 難以實現與擴展
 
 <div style="text-align:center">
-  <img src="img/02_12-traditional_unix_system_structure.png" alt= “02_12-traditional_unix_system_structure” width="55%">
+  <img src="../img/02_12-traditional_unix_system_structure.png" alt= “02_12-traditional_unix_system_structure” width="55%">
   <p>傳統的 UNIX 系統結構</p>
 </div>
 
 <div style="text-align:center">
-  <img src="img/02_13-linux_system_structure.png" alt= “02_13-linux_system_structure” width="30%">
+  <img src="../img/02_13-linux_system_structure.png" alt= “02_13-linux_system_structure” width="30%">
   <p>Linux 系統結構</p>
 </div>
 
@@ -205,7 +205,7 @@ hybrid strategies for designing operating systems.
   * 層次選定後，每一層都只能使用較低層的功能與服務，方便作系統的除錯與驗證。
 
 <div style="text-align:center">
-  <img src="img/02_14-a_layered_operating_system.png" alt= “02_14-a_layered_operating_system” width="40%">
+  <img src="../img/02_14-a_layered_operating_system.png" alt= “02_14-a_layered_operating_system” width="40%">
   <p>分層作業系統</p>
 </div>
 
@@ -215,7 +215,7 @@ hybrid strategies for designing operating systems.
   * 通常只包含最少的行程和記憶體管理，以及一些通信功能。
 
 <div style="text-align:center">
-  <img src="img/02_15-architecture_of_a_typical_microkernel.png" alt= “02_15-architecture_of_a_typical_microkernel” width="70%">
+  <img src="../img/02_15-architecture_of_a_typical_microkernel.png" alt= “02_15-architecture_of_a_typical_microkernel” width="70%">
   <p>典型微核心的架構</p>
 </div>
 
@@ -248,17 +248,17 @@ hybrid strategies for designing operating systems.
       3. ART 採用提前 (Ahead-of-time, AOT)技術，相較於即時編譯 (Just-in-time compilation, JIT)，ART 改善了效能、垃圾回收（Garbage Collection）、應用程式出錯以及效能分析。
 
 <div style="text-align:center">
-  <img src="img/02_16-architecture_of_macOS_and_iOS_operating_systems.png" alt= “02_16-architecture_of_macOS_and_iOS_operating_systems” width="40%">
+  <img src="../img/02_16-architecture_of_macOS_and_iOS_operating_systems.png" alt= “02_16-architecture_of_macOS_and_iOS_operating_systems” width="40%">
   <p>Apple 的 macOS 和 iOS 作業系統的體系結構</p>
 </div>
 
 <div style="text-align:center">
-  <img src="img/02_17-the_structure_of_darwin.png" alt= “02_17-the_structure_of_darwin” width="30%">
+  <img src="../img/02_17-the_structure_of_darwin.png" alt= “02_17-the_structure_of_darwin” width="30%">
   <p>達爾文架構</p>
 </div>
 
 <div style="text-align:center">
-  <img src="img/02_18-architecture_of_google_android.png" alt= “02_18-architecture_of_google_android” width="35%">
+  <img src="../img/02_18-architecture_of_google_android.png" alt= “02_18-architecture_of_google_android” width="35%">
   <p>Google 的 Android 架構</p>
 </div>
 
