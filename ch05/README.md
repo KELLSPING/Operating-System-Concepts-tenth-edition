@@ -73,6 +73,18 @@
 
 ### 5.1.4 分派器 ###
 
+* 在 CPU 排班功能包含的另外一個元件就是分派器 (dispatcher)，分派器就是將 CPU 控制權交給短程排班器選出行程時所採用的模組。
+* 分派器的功能包括
+  1. 內容轉換 (content switch)
+  2. 轉換成使用者模式 (user mode)
+  3. 跳躍到使用者程式的適當位置，以便重新開啟程式
+* 分派器用來停止一個行程，並啟動另一個行程所用的時間，就是所謂的分派延遲 (dispatch latency) 。
+
+<div style="text-align:center">
+    <img src="../img/0503 - The role of the dispatcher.png" alt= "0503 - The role of the dispatcher.png" width="25%">
+    <p>分派器的腳色</p>
+</div>
+  
 ## 5.2 排班原則 (Scheduling Criteria) ##
 
 ## 5.3 排班演算法 (Scheduling Algorithms) ##
