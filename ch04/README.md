@@ -48,6 +48,9 @@
 ## 4.2 多核心程式撰寫 (Multicore Programming) ##
 
 * 無論核心跨越 CPU 晶片或是在 CPU 晶片內，這種系統稱為多核心 (multicore) 系統。
+  * 多核心 (multi-core)
+  * 多元處理 (multi-processor)
+  * (multi-computer)
 * 並行 (concurrency) : 一個並行系統藉由 CPU 排成來允許所有的 task 有進展來支援一個以上的 task 。
 * 平行 (parallelism) : 一個平行系統能同時執行一個以上的 task 。亦即，多個核心在同一時間分別去處理 task 。
 
