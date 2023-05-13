@@ -122,7 +122,7 @@ Solaris operating systems.
 ### 5.3.1 先來先做排班法 (first-come, first-served; FCFS) ###
 
 * 目前最簡單的 CPU 排班演算法，就是 FCFS 排班演算法，就是把 CPU 資源分配給第一個要求 CPU 的行程。
-* FCFS 策略的製作很容易用 FIFO 佇列管理，當一個 process 進入 ready queue 後，它的行程控制區段 (PCB) 就鏈結到串列的尾端。當 CPU 有空時，就分配資源給在就緒佇列開頭的行程，執行中的行程就會從就緒佇列中剃除。
+* FCFS 策略的製作很容易用 FIFO 佇列管理，當一個 process 進入 ready queue 後，它的行程控制區段 (PCB) 就鏈結到串列的尾端。當 CPU 有空時，就分配資源給在 ready queue 開頭的行程，執行中的行程就會從 ready queue 中剃除。
 * 缺點 : FCFS 方法下的平均等待時間經常是很長的。
 * FCFS 排班演算法是 nonpreemptive 的演算法。
 
@@ -131,19 +131,65 @@ Solaris operating systems.
 * 將每一個行程的下一個 CPU 分割長度和該行程相結合，當 CPU 有空時，就指定給下一個 CPU 分割最短的行程。如果兩個行程具有相同長度的下一個 CPU 分割，就採用先來先做 (FCFS) 方法。
 * 更適當的說法 : 最短的下一個 CPU 分割 (shortest-next-CPU-burst) 排班演算法。
 * SJF 演算法可以是不可搶先或可搶先的。如果一個行程正在執行，而另有一個新行程到達就緒佇列中，就會產生問題。
-* 可搶先的 SJF 排班有時候又稱為最短剩餘時間優先 (shortest-remaining-time-first) 。
+* preemptive 的 SJF 排班有時候又稱為最短剩餘時間優先 (shortest-remaining-time-first) 。
 
 ### 5.3.3 依序循環排班法 (round-robin, RR) ###
 
-* 和 FCFS 排班法相類似，但是加入可搶先的規則，讓行程互相交換使用 CPU。
+* 和 FCFS 排班法相類似，但是加入 preemptive 的規則，讓行程互相交換使用 CPU。
 * 定義一個小的時間單位，稱為一個時間量 (time quantum) 或是時間片段 (time slice) 。通常一個時間量是 10 ~ 100 ms 。
-* 就緒佇列視為一個環狀佇列，CPU 排班程式繞著這個就緒佇列走，分配 CPU 給每一個行程一個時間量的時間區段。
-* 為了製作 RR 排班法，將就緒佇列當成行程的 FIFO 佇列，新的行程就加到就緒佇列的尾端。CPU 排班程式從就緒佇列中挑出第一個行程，設定計時器在經過一個時間量之後會發出中斷信號，並且分派該行程。
+* ready queue 視為一個 circular queue ，CPU 排班程式繞著這個就緒佇列走，分配 CPU 給每一個行程一個時間量的時間區段。
+* 為了製作 RR 排班法，將就緒佇列當成行程的 FIFO 佇列，新的行程就加到 ready queue 的尾端。CPU 排班程式從 ready queue 中挑出第一個行程，設定 timer 在經過一個時間量之後會發出 interrupt ，並且分派該行程。
 * 接下來有兩種情況可能發生
-  1. 行程的 CPU 分割可能比一個時間量小，在這樣的情況下，行程本身自動交還 CPU，於是排班器可以繼續進行在就緒佇列中的下一個行程。
-  2. 如果目前正在執行的 CPU 分割比一個時間量長，計時器將停止，並對作業系統產生一個中斷。執行 content switch ，且將該行程至於就緒佇列的尾端。 CPU 排班程式接著在就緒佇列中選出下一個行程。
-* 在 RR 方法下的平均等待時間通常較長。
-* RR 排班將產生大量的內容轉換。
+  1. process 的 CPU burst 可能比一個時間量小，在這樣的情況下，行程本身自動交還 CPU，於是 scheduler 可以繼續進行在 ready queue 中的下一個行程。
+  2. 如果目前正在執行 process 的 CPU burst 比一個時間量長，timer 將停止，並對 OS 產生一個 interrupt 。執行 content switch ，且將該行程至於 ready queue 的尾端。 CPU scheduler 接著在 ready queue 中選出下一個行程。
+* 在 RR 方法下的平均 waiting time 通常較長。
+* RR 排班將產生大量的 content switch 。
+* 因此 RR scheduling 中，沒有一個 process 所分配的 CPU core 時間會超過 1 time quantum ，除非只有一個可執行程式。如果 process 的 CPU burst 超過 1 time quantum ，它將被搶先，並且放回 ready queue 中。 RR scheduling 是一種 preemptive 的排班演算法。
+
+### 5.3.4 優先權排班法 (priority-scheduling) ###
+
+* 最短的工作先做排班法 (SJF) 是一般優先權排班演算法的特例。
+* 將 CPU core 分配給具有最高優先權的過程。 優先權相同的 process 按 FCFS 順序安排。
+* 優先權一般是一些固定範圍的數字 (ex. 0~7, 0~4096)。有些系統使用低數值表示高優先權，有些則相反。
+* 優先權可以由內部或外部定義。
+  * 內部得到的優先權是使用一些可以測得的量 (ex. 時間限制、記憶體需求、開啟檔案數量、平均 I/O
+  burst 與平均 CPU burst 的比率)
+  * 外部得到的優先權是由作業系統外部的一些標準所決定 (ex. 行程的重要性、支付使用電腦所付經費的類型與數量、其他政策性的因素)
+* 優先權可以是 preemptive 或 nonpreemptive 的。
+  * preemptive : 如果新 process 到達 ready queue 後，它的優先權如果比目前執行中 process 的優先權高，就會搶走 CPU core 先做。
+  * nonpreemptive : 將新的 process 放在 ready queue 的前端。
+* 無限期阻塞 (indefinite blocking) 問題、 飢餓 (starvation) 問題
+  * priority-scheduling 可能會造成一些低優先權的 process 一直等待。如果在一個工作繁重的電腦系統中，一連串高優先權的 process 會讓低優先權的 process 始終得不到 CPU。
+  * 低優先權的 process 遭遇無限期阻塞的一種解決方法，採用老化 (aging)。
+* 老化 (aging)
+  * 逐漸提高停留在系統中已經過一段長時間的 process 之優先權。
+  * 如果優先權範圍是 0~127 ，可以定期 (ex. 每秒) 遞增某個 process 的優先權，即是將優先權範圍的數字減一。
+* 依序循環排班 (RR) + 優先權排班 (priority)
+  * 使系統執行最高優先權 process ，並使用 RR 來執行具有相同優先權的 process 。
+  * 所有 process 都放在單一佇列中，可能需要 O(n)。
+
+### 5.3.5 多層佇列排班法 (multi-level queue scheduling) ###
+
+* 使用依序循環排班 (RR) + 優先權排班 (priority)，並且針對每個不同的優先權使用單獨的佇列通常會更容易，並且 priority-scheduling 只是在最高優先權佇列中排班行程。
+* 多層佇列排班法將 ready queue 區分為多個獨立的 queue。例如，一般的分類方法是區分為前台 (foreground)(交談式) 和背景 (background)(整批作業)。這兩種 process 有截然不同的回應時間 (response time)。
+* foreground 和 background 不同的排班演算法。
+* 五種不同佇列的多層佇列排班點算法範例，
+  * 優先順序列式如下:
+    1. 即時行程
+    2. 系統行程
+    3. 交談式行程
+    4. 整批行程
+  * 當即時行程、系統行程或交談式行程的佇列都已經空了，才會輪到整批行程執行。
+  * 如果在整批行程的執行過程中，有交談式行程進入就緒佇列，整批行程也會讓它優先使用 CPU。
+  * 當 process 進入系統之後，就會分派到某一個固定佇列，而每個佇列的 process 都不能轉移到別的佇列。
+  * 優點:降低排班的負荷，缺點:沒有彈性。
+
+### 5.3.6 多層佇列回饋排班法 (multi-level feedback queue scheduling) ###
+
+* 相較於多層佇列排班法 (multi-level queue scheduling)，多層佇列回饋排班法允許 process 在佇列之間移動。
+* 利用不同的 CPU burst 時段的特性，區分不同等級的佇列。
+  * 如果一個 process 需要較長的 CPU 時間，就會排到低優先權的佇列。使得 I/O 傾向和交談式 process 放在高優先權的佇列。
+  * 如果在低優先權佇列等候太久的 process，隨著時間的增長，也會漸漸地移往高優先權佇列。這種老化 (aging) 形式避免了飢餓 (starvation) 。
 
 ## 5.4 執行緒排班 (Thread Scheduling) ##
 
