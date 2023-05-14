@@ -190,10 +190,74 @@ Solaris operating systems.
 * 利用不同的 CPU burst 時段的特性，區分不同等級的佇列。
   * 如果一個 process 需要較長的 CPU 時間，就會排到低優先權的佇列。使得 I/O 傾向和交談式 process 放在高優先權的佇列。
   * 如果在低優先權佇列等候太久的 process，隨著時間的增長，也會漸漸地移往高優先權佇列。這種老化 (aging) 形式避免了飢餓 (starvation) 。
+* 依據以下參數決定
+  * 佇列個數
+  * 每個佇列的盤搬演算法
+  * 決定甚麼時候把 process 提升到較高優先權佇列的方法
+  * 決定降低高優先權佇列的 process 到下層佇列時機的方法
+  * 當 process 需要服務時，決定該 process 進入哪一個佇列的方法
+* 多層佇列回饋排班法為最通用的 CPU 排班演算法，也是最複雜的一種演算法。
 
 ## 5.4 執行緒排班 (Thread Scheduling) ##
 
+* threads 對 process 模式可分為
+  * 使用者層次 (user-level) 執行緒
+  * 核心層式 (kernek-level) 執行緒
+* 在大多數現代 OS 上，由 OS 排程的是 kernel-level threads ，不是 process 。
+* user-level thread 是由 thread library 管理，kernel 不知道 user-level thread 。
+* 因此 user-level thread 為了在 CPU core 上執行，它必須映射 (mapping) 到一個相關的 kernek-level thread，雖然這個 mapping 可能是間接及可能使用輕量級行程 (lightweight process, LWP)。
+
+### 5.4.1 競爭範圍 (Contention Scope) ###
+
+* user-level 和 kernel-level threads 之間的差別是他們如何被排程的。
+* 在製作 many-to-one 和 many-to-many 模式的系統上，thread library 排程 user-level threads 在可用的 LWP 上執行，這種技巧稱為行程競爭範圍 (process-contention scope, PCS)，因為 CPU 的競爭發生在屬於相同 process 的 thread。 (當我們說 thread library 排程 user-level threads 到可用的 LWP 上執行，並不是指 user-level threads 正在某個 CPU 上執行，這必須要 OS 排程 LWP 中的 kernel-level threads 在實體的 CPU 上執行)
+* 為了決定哪一個 kernel-level threads 排程到 CPU 上，kernel 使用系統競爭範圍 (system-contention scope, SCS)。以 SCS 排班的 CPU 競爭發生在系統中的所有 threads。例如，Windows 和 Linux 等使用 one-to-one 模式的系統，只使用 SCS 排班 threads。
+
+### 5.4.2 (Pthread 的排班) ###
+
 ## 5.5 多處理器的排班問題 (Multi-Processor Scheduling) ##
+
+* 前面討論的重點是針對系統中 single processing core 的 CPU-Scheduling 問題。
+* 如果一套系統有多個 CPU ，則可利用負載分享 (load sharing)。
+* 多處理器 (multi-processor) 的系統架構
+  * 傳統
+    * 多個實體 processor 的系統，每個 processor 只有 single-core CPU
+  * 現代
+    * 多核心 CPU (Multicore CPUs)
+    * 多執行緒核心 (Multithreaded cores)
+    * 非統一記憶體存取架構系統 (NUMA systems)
+    * 異構式多處理 (Heterogeneous multiprocessing)
+
+### 5.5.1 多處理器排班方法 (Multiple-Processor Scheduling) ###
+
+* 非對稱式多處理 (asymmetric multiprocessing)
+  * 角色
+    * 主機伺服器 (master server) : 在系統中，其中的一個 processor，擁有所有的排程決定、 I/O 處理和處理系統的其他活動。
+    * 其他的 processor : 只執行使用者程式碼。
+  * 只有主機伺服器中的那一個 processor 存取 system data structures ，因此減少對 data sharing 的需要。
+    * 缺點 : 主機伺服器是潛在的 bottleneck ，可能造成系統效能會降低。
+
+* 對稱式多元處理 (symmetric multiprocessing, SMP)
+  * 角色
+    * 每個 processor 能 self-scheduling 。經由讓每個 processor 的 scheduler 檢查 ready queue ，並選擇要運行的 threads 。
+  * 兩種可能的策略來建構符合 threads 的排程
+    * 一般就緒佇列 (common ready queue)
+      1. 共享執行佇列 (shared run queue) 可能存在 race condition，必須確保兩個單獨的 processor 不會選擇排程同一個 thread，並且 thread 不會從 ready queue 中遺失。
+      2. 可以使用鎖 (lock)，來保護 ready queue 避免 race condition。
+      3. lock 將會是高度競爭的，因為對 ready queue 的所有訪問都需要 lock 的所有權，因此訪問 ready queue 可能會成為性能瓶頸。
+    * 獨立核心運行柱列 (pre-core run queues)
+      1. 允許 processor 從其專用執行的佇列 (private run queue) 中進行 thread 排程，因此不會面臨shared queue 造成的效能問題。
+      2. 這是支援 SMP 系統最常用的方法。
+      3. 每個 processor 的執行佇列 (run queue) 能更有效地使用快取記憶體 (cache memory)。
+      4. 每個 processor 的 run queue 問題，每個 queue 有不同的工作負擔 (workloads)。使用平衡演算法 (balancing algorithms) 來平衡所有 processor 的 workloads 。
+  * 目前幾乎所有的現代 OS 都支持 SMP，包括 Windows, Linux, macOS, Android 和 iOS。
+
+<div style="text-align:center">
+    <img src="../img/0511 - Organization of ready queues.png" alt= "0511 - Organization of ready queues.png" width="50%">
+    <p>ready queue 的結構</p>
+</div>
+
+### 5.5.2 多核心處理器 (Multicore Processors) ###
 
 ## 5.6 即時 CPU 排班 (Real-Time CPU Scheduling) ##
 
