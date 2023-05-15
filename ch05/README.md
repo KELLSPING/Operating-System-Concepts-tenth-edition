@@ -312,6 +312,54 @@ Solaris operating systems.
     <p>dual-threaded processing core 的兩層式排班</p>
 </div>
 
+### 5.5.3 負載平衡 (Load Balancing) ###
+
+* 在對稱式多元處理 (SMP) 系統中，讓所有 CPU 保持工作量平衡，才能善用 multi-processor 的優點。
+* 負載平衡通常只有在每個 processor 有 private ready queue 的系統中，才是必須的。因為  common run queue 的系統，在發生 processor 發生 idle 時，將會立刻由 common ready queue 中提取一個可運行的 process。
+
+* 兩種一般的方法
+  * 推轉移 (push migration)
+  * 拉轉移 (pull migration)
+
+* 簡單的觀點
+  * 只是要求所有 queue 具有大約相同數量的 threads
+  * 平衡地處理需要在所有 queue 之間平均分配 threads 的 priorities
+
+### 5.5.4 處理器親和性 (Processor Affinity) ###
+
+* 說明
+  * 避免 process 由一個 CPU core 轉移到另一個 CPU core，而是嘗試讓一個 process 在同一個 CPU core 上一直執行，這就是處理器親和性 (Processor Affinity)。
+
+* 如果讓 process 從第一個 CPU core 搬移到第二個 CPU core 上執行，那第一個 CPU core 中 cache 的內容將變為無效，而第二個 CPU core 中 cache 必須重新填滿。
+
+* 種類
+  * 軟性親和性 (soft affinity)
+  * 硬性親和性 (hard affinity)
+
+* 非統一記憶體存取架構 (non-uniform memory access, NUMA)
+  * 說明
+    * 是電腦設計中，一種為 multi-core 的記憶體架構，記憶體存取時間取決於記憶體相對於處理器的位置。
+    * 在 NUMA 中，CPU 存取本地記憶體比非本地記憶體的速度快。
+  * 通常負載平衡 (Load Balancing) 會和處理器親和性 (Processor Affinity) 相抵銷。
+
+<div style="text-align:center">
+    <img src="../img/0516 - NUMA and CPU scheduling.png" alt= "0516 - NUMA and CPU scheduling.png" width="60%">
+    <p>NUMA and CPU scheduling</p>
+</div>
+
+### 5.5.5 異構多處理 (Heterogeneous Multiprocessing, HMP) ###
+
+* 在行動裝置系統中，CPU cores 可能會有不同的時脈速度和電源管理，包括將 core 的功率消耗調整到 idle 的程度，這種的系統稱為 HMP。
+* HMP 的目的是將 task 分配給特定的 core，進行更好的功率消耗管理。
+
+* ARM CPU 中的 big.LITTLE 架構
+  * 核心種類
+    * 高性能 big 核心 : 消耗能量多，只能使用較短時間
+    * 節能 LITTLE 核心 : 消耗能量少，能使用較長時間
+  * 優點
+    * CPU scheduler 將不需要高效能但能運行較長時間的 task (ex. background task) 分配給小核心，以節省電量；將需要更多處理能力但需要較短時間的交互式 app 分配給大核心。
+    * 行動裝置處於省點模式時，則可以禁止使用耗能較大的大核心，系統可以完全依靠節能性較高的小核心。
+
 ## 5.6 即時 CPU 排班 (Real-Time CPU Scheduling) ##
 
 ## 5.7 作業系統範例 (Operating-System Examples) ##
