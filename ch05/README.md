@@ -190,10 +190,175 @@ Solaris operating systems.
 * 利用不同的 CPU burst 時段的特性，區分不同等級的佇列。
   * 如果一個 process 需要較長的 CPU 時間，就會排到低優先權的佇列。使得 I/O 傾向和交談式 process 放在高優先權的佇列。
   * 如果在低優先權佇列等候太久的 process，隨著時間的增長，也會漸漸地移往高優先權佇列。這種老化 (aging) 形式避免了飢餓 (starvation) 。
+* 依據以下參數決定
+  * 佇列個數
+  * 每個佇列的盤搬演算法
+  * 決定甚麼時候把 process 提升到較高優先權佇列的方法
+  * 決定降低高優先權佇列的 process 到下層佇列時機的方法
+  * 當 process 需要服務時，決定該 process 進入哪一個佇列的方法
+* 多層佇列回饋排班法為最通用的 CPU 排班演算法，也是最複雜的一種演算法。
 
 ## 5.4 執行緒排班 (Thread Scheduling) ##
 
+* threads 對 process 模式可分為
+  * 使用者層次 (user-level) 執行緒
+  * 核心層式 (kernek-level) 執行緒
+* 在大多數現代 OS 上，由 OS 排程的是 kernel-level threads ，不是 process 。
+* user-level thread 是由 thread library 管理，kernel 不知道 user-level thread 。
+* 因此 user-level thread 為了在 CPU core 上執行，它必須映射 (mapping) 到一個相關的 kernek-level thread，雖然這個 mapping 可能是間接及可能使用輕量級行程 (lightweight process, LWP)。
+
+### 5.4.1 競爭範圍 (Contention Scope) ###
+
+* user-level 和 kernel-level threads 之間的差別是他們如何被排程的。
+* 在製作 many-to-one 和 many-to-many 模式的系統上，thread library 排程 user-level threads 在可用的 LWP 上執行，這種技巧稱為行程競爭範圍 (process-contention scope, PCS)，因為 CPU 的競爭發生在屬於相同 process 的 thread。 (當我們說 thread library 排程 user-level threads 到可用的 LWP 上執行，並不是指 user-level threads 正在某個 CPU 上執行，這必須要 OS 排程 LWP 中的 kernel-level threads 在實體的 CPU 上執行)
+* 為了決定哪一個 kernel-level threads 排程到 CPU 上，kernel 使用系統競爭範圍 (system-contention scope, SCS)。以 SCS 排班的 CPU 競爭發生在系統中的所有 threads。例如，Windows 和 Linux 等使用 one-to-one 模式的系統，只使用 SCS 排班 threads。
+
+### 5.4.2 (Pthread 的排班) ###
+
 ## 5.5 多處理器的排班問題 (Multi-Processor Scheduling) ##
+
+* 前面討論的重點是針對系統中 single processing core 的 CPU-Scheduling 問題。
+* 如果一套系統有多個 CPU ，則可利用負載分享 (load sharing)。
+* 多處理器 (multi-processor) 的系統架構
+  * 傳統
+    * 多個實體 processor 的系統，每個 processor 只有 single-core CPU
+  * 現代
+    * 多核心 CPU (Multicore CPUs)
+    * 多執行緒核心 (Multithreaded cores)
+    * 非統一記憶體存取架構系統 (NUMA systems)
+    * 異構式多處理 (Heterogeneous multiprocessing)
+
+### 5.5.1 多處理器排班方法 (Multiple-Processor Scheduling) ###
+
+* 非對稱式多處理 (asymmetric multiprocessing)
+  * 角色
+    * 主機伺服器 (master server) : 在系統中，其中的一個 processor，擁有所有的排程決定、 I/O 處理和處理系統的其他活動。
+    * 其他的 processor : 只執行使用者程式碼。
+  * 只有主機伺服器中的那一個 processor 存取 system data structures ，因此減少對 data sharing 的需要。
+    * 缺點 : 主機伺服器是潛在的 bottleneck ，可能造成系統效能會降低。
+
+* 對稱式多元處理 (symmetric multiprocessing, SMP)
+  * 角色
+    * 每個 processor 能 self-scheduling 。經由讓每個 processor 的 scheduler 檢查 ready queue ，並選擇要運行的 threads 。
+  * 兩種可能的策略來建構符合 threads 的排程
+    * 一般就緒佇列 (common ready queue)
+      1. 共享執行佇列 (shared run queue) 可能存在 race condition，必須確保兩個單獨的 processor 不會選擇排程同一個 thread，並且 thread 不會從 ready queue 中遺失。
+      2. 可以使用鎖 (lock)，來保護 ready queue 避免 race condition。
+      3. lock 將會是高度競爭的，因為對 ready queue 的所有訪問都需要 lock 的所有權，因此訪問 ready queue 可能會成為性能瓶頸。
+    * 獨立核心運行柱列 (pre-core run queues)
+      1. 允許 processor 從其專用執行的佇列 (private run queue) 中進行 thread 排程，因此不會面臨shared queue 造成的效能問題。
+      2. 這是支援 SMP 系統最常用的方法。
+      3. 每個 processor 的執行佇列 (run queue) 能更有效地使用快取記憶體 (cache memory)。
+      4. 每個 processor 的 run queue 問題，每個 queue 有不同的工作負擔 (workloads)。使用平衡演算法 (balancing algorithms) 來平衡所有 processor 的 workloads 。
+  * 目前幾乎所有的現代 OS 都支持 SMP，包括 Windows, Linux, macOS, Android 和 iOS。
+
+<div style="text-align:center">
+    <img src="../img/0511 - Organization of ready queues.png" alt= "0511 - Organization of ready queues.png" width="50%">
+    <p>ready queue 的結構</p>
+</div>
+
+### 5.5.2 多核心處理器 (Multicore Processors) ###
+
+* 傳統的 SMP 系統提供多個實體的 processor ；最近是將多個 CPU cores 放在同一個 chip 上，產生多核心處理器 (multicore processor)。
+* multicore processor 比 multi processor 好，速度較快且消耗較少的能量。
+* multicore processor 可能使 scheduling 問題複雜化。
+* 記憶體停滯 (memory stall)
+  * 當 processor 存取 memory，將花費時間在等待資料變成可以使用，例如:快取失誤 (存取的資料不在快取記憶體中)。
+  * 這種情況下，processor 可能話費 50% 的時間等待 memory 的資料變成可以使用的。
+
+<div style="text-align:center">
+    <img src="../img/0512 - Memory stall.png" alt= "0512 - Memory stall.png" width="60%">
+    <p>記憶體停滯</p>
+</div>
+
+* 處理器核心多執行緒化 (multithreaded processing cores)
+  * 為了改善 memory stall ，最近許多硬體設計已經實作 multithreaded processing cores ，將兩個或多個硬體執行緒 (hardware threads) 分配到每一個 core 。
+  * 如果一個 thread 因為等待記憶體而停滯，core 可以切換到另一個 thread。
+  * 這種技術稱為晶片多執行緒 (chip multithreading, CMT)。
+  * processor 包含 4 個 cores ，每個 core 包含兩個 thread。從 OS 的角度來看，有 8 個邏輯 CPU 。(因為 thread 是 CPU 進行 scheduling 的最小單位)
+
+<div style="text-align:center">
+    <img src="../img/0513 - Multithreaded multicore system.png" alt= "0513 - Multithreaded multicore system.png" width="60%">
+    <p>多執行緒多核心系統</p>
+</div>
+
+<div style="text-align:center">
+    <img src="../img/0514 - Chip multithreading.png" alt= "0514 - Chip multithreading.png" width="40%">
+    <p>晶片多執行緒</p>
+</div>
+
+* Intel 處理器使用超執行緒 (hyper-threading)
+  * 也稱為同步多執行緒 (simultaneous multithreading, SMT)
+  * 將多個 hardware threads 分配給一個 core
+
+* 兩種方法得到 multithreaded processing cores
+  * 粗糙多執行緒 (coarse-grained multithreaded)
+    * 一個 thread 會在一個 core 上執行，直到類似 memory stall 發生。
+  * 精緻多執行緒 (fine-grained multithreaded)
+    * 通常在指令周期的邊緣進行切換
+    * 精緻系統的架構設計包含 thread switch 的邏輯，因此切換的代價較小
+
+* core 的資源 (ex. caches, pipelines) 必須在 hardware thread 之間共享，因此 core 一次只能執行一個 hardware thread。
+* 因此 multithread 和 multicore processor 需要兩種不同層級的 scheduling 。
+
+* 兩層式排班 (two-level scheduling)
+  * level 1 scheduling
+    * OS 選擇一個 SW thread 在 HW thread (logical CPU) 上執行
+  * level 2 scheduling
+    * 設定每個 core 決定執行哪一個 HW thread
+
+<div style="text-align:center">
+    <img src="../img/0515 - Two levels of scheduling.png" alt= "0515 - Two levels of scheduling.png" width="50%">
+    <p>dual-threaded processing core 的兩層式排班</p>
+</div>
+
+### 5.5.3 負載平衡 (Load Balancing) ###
+
+* 在對稱式多元處理 (SMP) 系統中，讓所有 CPU 保持工作量平衡，才能善用 multi-processor 的優點。
+* 負載平衡通常只有在每個 processor 有 private ready queue 的系統中，才是必須的。因為  common run queue 的系統，在發生 processor 發生 idle 時，將會立刻由 common ready queue 中提取一個可運行的 process。
+
+* 兩種一般的方法
+  * 推轉移 (push migration)
+  * 拉轉移 (pull migration)
+
+* 簡單的觀點
+  * 只是要求所有 queue 具有大約相同數量的 threads
+  * 平衡地處理需要在所有 queue 之間平均分配 threads 的 priorities
+
+### 5.5.4 處理器親和性 (Processor Affinity) ###
+
+* 說明
+  * 避免 process 由一個 CPU core 轉移到另一個 CPU core，而是嘗試讓一個 process 在同一個 CPU core 上一直執行，這就是處理器親和性 (Processor Affinity)。
+
+* 如果讓 process 從第一個 CPU core 搬移到第二個 CPU core 上執行，那第一個 CPU core 中 cache 的內容將變為無效，而第二個 CPU core 中 cache 必須重新填滿。
+
+* 種類
+  * 軟性親和性 (soft affinity)
+  * 硬性親和性 (hard affinity)
+
+* 非統一記憶體存取架構 (non-uniform memory access, NUMA)
+  * 說明
+    * 是電腦設計中，一種為 multi-core 的記憶體架構，記憶體存取時間取決於記憶體相對於處理器的位置。
+    * 在 NUMA 中，CPU 存取本地記憶體比非本地記憶體的速度快。
+  * 通常負載平衡 (Load Balancing) 會和處理器親和性 (Processor Affinity) 相抵銷。
+
+<div style="text-align:center">
+    <img src="../img/0516 - NUMA and CPU scheduling.png" alt= "0516 - NUMA and CPU scheduling.png" width="60%">
+    <p>NUMA and CPU scheduling</p>
+</div>
+
+### 5.5.5 異構多處理 (Heterogeneous Multiprocessing, HMP) ###
+
+* 在行動裝置系統中，CPU cores 可能會有不同的時脈速度和電源管理，包括將 core 的功率消耗調整到 idle 的程度，這種的系統稱為 HMP。
+* HMP 的目的是將 task 分配給特定的 core，進行更好的功率消耗管理。
+
+* ARM CPU 中的 big.LITTLE 架構
+  * 核心種類
+    * 高性能 big 核心 : 消耗能量多，只能使用較短時間
+    * 節能 LITTLE 核心 : 消耗能量少，能使用較長時間
+  * 優點
+    * CPU scheduler 將不需要高效能但能運行較長時間的 task (ex. background task) 分配給小核心，以節省電量；將需要更多處理能力但需要較短時間的交互式 app 分配給大核心。
+    * 行動裝置處於省點模式時，則可以禁止使用耗能較大的大核心，系統可以完全依靠節能性較高的小核心。
 
 ## 5.6 即時 CPU 排班 (Real-Time CPU Scheduling) ##
 
