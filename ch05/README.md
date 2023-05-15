@@ -259,6 +259,59 @@ Solaris operating systems.
 
 ### 5.5.2 多核心處理器 (Multicore Processors) ###
 
+* 傳統的 SMP 系統提供多個實體的 processor ；最近是將多個 CPU cores 放在同一個 chip 上，產生多核心處理器 (multicore processor)。
+* multicore processor 比 multi processor 好，速度較快且消耗較少的能量。
+* multicore processor 可能使 scheduling 問題複雜化。
+* 記憶體停滯 (memory stall)
+  * 當 processor 存取 memory，將花費時間在等待資料變成可以使用，例如:快取失誤 (存取的資料不在快取記憶體中)。
+  * 這種情況下，processor 可能話費 50% 的時間等待 memory 的資料變成可以使用的。
+
+<div style="text-align:center">
+    <img src="../img/0512 - Memory stall.png" alt= "0512 - Memory stall.png" width="60%">
+    <p>記憶體停滯</p>
+</div>
+
+* 處理器核心多執行緒化 (multithreaded processing cores)
+  * 為了改善 memory stall ，最近許多硬體設計已經實作 multithreaded processing cores ，將兩個或多個硬體執行緒 (hardware threads) 分配到每一個 core 。
+  * 如果一個 thread 因為等待記憶體而停滯，core 可以切換到另一個 thread。
+  * 這種技術稱為晶片多執行緒 (chip multithreading, CMT)。
+  * processor 包含 4 個 cores ，每個 core 包含兩個 thread。從 OS 的角度來看，有 8 個邏輯 CPU 。(因為 thread 是 CPU 進行 scheduling 的最小單位)
+
+<div style="text-align:center">
+    <img src="../img/0513 - Multithreaded multicore system.png" alt= "0513 - Multithreaded multicore system.png" width="60%">
+    <p>多執行緒多核心系統</p>
+</div>
+
+<div style="text-align:center">
+    <img src="../img/0514 - Chip multithreading.png" alt= "0514 - Chip multithreading.png" width="40%">
+    <p>晶片多執行緒</p>
+</div>
+
+* Intel 處理器使用超執行緒 (hyper-threading)
+  * 也稱為同步多執行緒 (simultaneous multithreading, SMT)
+  * 將多個 hardware threads 分配給一個 core
+
+* 兩種方法得到 multithreaded processing cores
+  * 粗糙多執行緒 (coarse-grained multithreaded)
+    * 一個 thread 會在一個 core 上執行，直到類似 memory stall 發生。
+  * 精緻多執行緒 (fine-grained multithreaded)
+    * 通常在指令周期的邊緣進行切換
+    * 精緻系統的架構設計包含 thread switch 的邏輯，因此切換的代價較小
+
+* core 的資源 (ex. caches, pipelines) 必須在 hardware thread 之間共享，因此 core 一次只能執行一個 hardware thread。
+* 因此 multithread 和 multicore processor 需要兩種不同層級的 scheduling 。
+
+* 兩層式排班 (two-level scheduling)
+  * level 1 scheduling
+    * OS 選擇一個 SW thread 在 HW thread (logical CPU) 上執行
+  * level 2 scheduling
+    * 設定每個 core 決定執行哪一個 HW thread
+
+<div style="text-align:center">
+    <img src="../img/0515 - Two levels of scheduling.png" alt= "0515 - Two levels of scheduling.png" width="50%">
+    <p>dual-threaded processing core 的兩層式排班</p>
+</div>
+
 ## 5.6 即時 CPU 排班 (Real-Time CPU Scheduling) ##
 
 ## 5.7 作業系統範例 (Operating-System Examples) ##
