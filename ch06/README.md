@@ -158,6 +158,20 @@ while (true) {
 
 ## 6.6 號誌 (Semaphores) ##
 
+* mutex 通常被認為是最簡單的同步工具。 semaphore 是一個更健全的工具，它的表現類似 mutex，但也能提供更複雜的方法讓 process 同步它們的活動。
+* 名詞
+  * S 是一個正數變數，除了初值外，它只能經由 wait() 和 signal() 兩個標準不可分割的運算來存取。
+  * wait() 運算，本來被稱為 P (源於荷蘭字的 proberen ，測試)
+  * signal() 運算，本來被稱為 V (源於荷蘭字的 verhogen ，遞增)
+* wait() 和 signal() 兩個運算式以標準不可分割的方式來執行修正 semaphore 的 S ，也就是，當一個 process 修正 S 時，沒有其他的 process 可同時修正此 semaphore 。
+
+* 種類
+  * 二進制號誌 (binary semaphore)
+    * S 值只可以是 0 或 1 。
+    * 行為類似於互斥鎖。在沒有提供 mutex 的系統，可以使用 binary semaphore 取代 mutex 以提供互斥。
+  * 計數號誌 (counting semaphore)
+    * S 值可以不受限制
+
 ## 6.7 監控器 (Monitors) ##
 
 ## 6.8 存活 (Liveness) ##
