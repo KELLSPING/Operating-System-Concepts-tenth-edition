@@ -92,7 +92,69 @@ while (true) {
 
 ## 6.4 同步的硬體支援 (Hardware Support for Synchronization) ##
 
+* 以軟體為基礎的的方式解決 critical section 的問題
+  * 稱為基於軟體的解決方案，因為該演算法涉及 OS 的任何特殊支援或特定的硬體說明，以確保互斥。
+  * 無法保證在現代的電腦能運作
+* 3 個硬體指令來解決 critical section 問題
+  1. 記憶體屏障 (Memory Barriers)
+  2. 硬體指令 (Hardware Instructions)
+  3. 單元變數 (Atomic Variables)
+
+### 6.4.1 記憶體屏障 (Memory Barriers) ###
+
+* 記憶體模型 (memory model)
+  * 電腦架構如何確定它將向應用程式提供記憶體保證
+
+* 記憶體模型屬於以下 2 類之 1
+  * 強排序 : 在一個 processor 上進行 memory 修改時，其他 processor 立即可知道
+  * 弱排序 : 在一個 processor 上進行 memory 修改時，其他 processor 不會立即知道
+
+### 6.4.2 硬體指令 (Hardware Instructions) ###
+
+### 6.4.3 單元變數 (Atomic Variables) ###
+
 ## 6.5 互斥鎖 (Mutex Locks) ##
+
+* 6.4 節，對 critical section 問題以硬體為基礎的解決很複雜，並且是應用程式設計師無法接觸到的。
+* OS 設計者建立軟體工具以解決 critical section 問題。軟體工具中，最簡單的是互斥鎖 (mutex lock)。
+* 互斥鎖 (mutual exclusion lock, mutex lock)
+  * 使用 mutex 來保護 critical section ，避免 race condition 。
+  * process 在進入 critical section 前，必須取得 lock ；當 process 離開 critical section 前，會釋放 lock 。
+  * 函數 acquire() 取得鎖；函數 release() 釋放鎖。
+
+  ```C
+  /* 使用 mutex 解決 critical section 問題 */
+  while (true) {
+      [acquire lock]
+          critical section
+      [release lock]
+          remainder section
+  }
+  ```
+
+* 鎖的競爭 (lock contention)
+  * lock 可以是競爭的 (contended) ，也可以是無競爭的 (uncontended) 。
+    * 競爭的鎖 : 如果嘗試取得 lock 時， thread 會被阻塞，該 lock 被認為是 contended 。
+      1. 高競爭 (high contention) : 嘗試獲取 lock 時， thread 的數量較多
+      2. 低競爭 (low contention) : 嘗試獲取 lock 時， thread 的數量較少
+    * 無競爭的鎖 : 如果嘗試取得 lock 時， thread 不會被阻塞，該 lock 被認為是 uncontended 。
+  * 高競爭的鎖 (highly contended locks) 會降低 concurrent 應用程式的整體效能。
+
+* 時序時間 (short duration)
+  * 在 multiprocessor 系統中，持續時間內保持鎖定的機制會被認為是 Spinlocks 。
+  * 持續時間 : 需要等待 2 個內容轉換器時間的鎖
+    * 其中 1 個內容轉換器 : 用於將 thread 移至 waiting state
+    * 另 1 個內容轉換器 : 一旦 lock 釋放後，用於恢復 waiting thread
+
+### 自旋鎖 (Spinlocks) ###
+
+* mutex 通常使用 6.4 節的 compare_and_swap() (CAS) 操作來實現。 它要求忙碌等待 (busy waiting) ，當一個 process 在它的 critical section 時，任何試圖進入 critical section 的其他 process 必須在呼叫 acquire() 的地方不斷地執行。
+* 在真正的 multiprogramming 系統中，多個的 process 共享一個 CPU core ，busy waiting 的這種連續循環顯然是一個問題，並且還會浪費 CPU cycles。
+* 6.6 節，使用一種方法，透過暫時讓 waiting process 進入 sleep，然後在 lock 可用時，將其喚醒，來避免 busy waiting 。
+* 在 mutex 中，使用 CAS 操作來時間，這種型態的 mutex 也被稱為 spinlock ， 因為 process 在等待 lock 可以取得時，一直"盤旋"著。
+* 優點
+  * 當 process 必須等待一個 lock 時，不需要 content switch 。 (content switch 很費時)
+  * 在 multicore 系統中，spinlock 是很有用的，當一個 lock 在持續時間被把持時，一個 thread 可以 spin 在一個 CPU core 上，而另一個 thread 則在其他 CPU core 執行 critical section。
 
 ## 6.6 號誌 (Semaphores) ##
 
