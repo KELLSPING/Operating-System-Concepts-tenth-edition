@@ -55,9 +55,38 @@
   * 臨界區段 (critical section, CS)
   * 剩餘區段 (remainder section, RS)
 * 3 項要求解決臨界區兼問題
-  * 互斥 (mutex exclusion) : 當有 process 在 critical section 內執行，則其他的 process 不能在其 critical section 內執行。
-  * 進行 (progress) : 當一個 process 想要進入 critical section ， 除了 critical section 內沒有 process 在執行， 這個 process 也不能在 remainder section ， 才能在下一次進入 critical section ，並且這個選擇不得無限期地延遲。
-  * 限制性的等待 (bounded waiting) : 在一個 process 已經要求進入其 critical section ， 而此要求尚未被答應之前，允許其他 process 進入其 critical section 的次數有一個限制。
+  1. 互斥 (mutex exclusion) : 當有 process 在 critical section 內執行，則其他的 process 不能在其 critical section 內執行。
+  2. 進行 (progress) : 當一個 process 想要進入 critical section ， 除了 critical section 內沒有 process 在執行， 這個 process 也不能在 remainder section ， 才能在下一次進入 critical section ，並且這個選擇不得無限期地延遲。
+  3. 限制性的等待 (bounded waiting) : 在一個 process 已經要求進入其 critical section ， 而此要求尚未被答應之前，允許其他 process 進入其 critical section 的次數有一個限制。
+
+```C
+while (true) {
+    [入口區段]
+        critical section
+    [出口區段]
+        remainder section
+}
+```
+
+* 在指定時間點上，許多 kernel mode 的 process 可能在 OS 中動作，因此實現 OS 的核心程式碼會有一些可能的 race condition 。
+  * 例如:分配 PID 的 race condition
+
+<div style="text-align:center">
+    <img src="../img/0602 - Race condition when assigning a pid.png" alt= "0602 - Race condition when assigning a pid.png" width="60%">
+    <p>當分配 PID 的競爭條件</p>
+</div>
+
+* 在 single core 環境中，只要可以防止在修改共享變數時發生中斷，便可以簡單地解決 critical section 問題。
+* 在 multi core 環境中，禁止使用中斷可能會很耗時，因為消息將傳遞到所有的 core 中，此消息延遲傳入各個 critical section ，造成系統效率下降。
+* 如果系統時鐘是靠中斷更新的，那麼也要考慮到禁用中斷對系統時鐘造成的影響。
+
+* 2 種方法用來處理 OS 中 critical section 的方法
+  * 可搶先核心 (preemptive kernel)
+    * 讓一個 process 在 kernel mode 中執行時可以被搶先。
+    * 必須小心設計，以確保共用的核心資料沒有 race condition 。
+  * 不可搶先核心 (nonpreemptive kernel)
+    * 不允許一個 process 在 kernel mode 執行時被搶先。
+    * 每次只有一個 process 在 kernel 中有動作，可免於核心資料結構上的 race condition 。
 
 ## 6.3 Peterson 解決問題 (Peterson’s Solution) ##
 
