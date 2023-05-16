@@ -362,8 +362,90 @@ Solaris operating systems.
 
 ## 5.6 即時 CPU 排班 (Real-Time CPU Scheduling) ##
 
+* 種類
+  * 軟即時系統 (soft read-time system)
+    * 對於非常即時的 process 沒有保證會第一個執行，只保證會比非迫切的 process 優先被考慮。
+  * 硬即時系統 (haed real-time system)
+    * process 必須在期限內被服務；在期限過後的服務等同於沒有被服務。
+
+### 5.6.1 降低潛伏期 (Minimizing Latency) ###
+
+* 說明
+  * 將事件發生到它被服務時所經過的時間。
+
+* real-time 系統是事件驅動 (event-driven) 本質，通常系統正在等待 real-time 事件的發生。
+* 事件可以發生在軟體 (ex. timer) 或硬體。
+* 不同的事件會有不同的潛伏期。例如:反鎖死剎車系統、飛機上控制雷達的嵌入式系統
+
+<div style="text-align:center">
+    <img src="../img/0517 - Event latency.png" alt= "0517 - Event latency.png" width="40%">
+    <p>事件潛伏期</p>
+</div>
+
+* 兩種類型的潛伏期影響 real-time system 效能
+  * 中斷潛伏期 (interrupt latency)
+    * 指 interrupt 抵達 CPU 到開始執行中斷服務常式 (interrupt service routine, ISR) 的時間間隔
+  * 分派潛伏期 (dispatch latency)
+    * process 排程分派器 (dispatcher) 停止某個 process ，並啟動另一個 process 的時間量，稱為分派潛伏期
+
+* 中斷潛伏期 (interrupt latency)
+  * 當 interrupt 發生時，OS 必須先完成正在執行的 instruction，並且決定 interrupt 發生的類型，然後在使用特定的 ISR 去服務 interrupt 前，必須儲存目前 process 的狀態。
+
+* 分派潛伏期 (dispatch latency)
+  * 提供 real-time task 立即存取 CPU ，強制 real-time OS 將此潛伏期降到最低。
+  * 讓分派潛伏期降低的最有效技術是提供 preemptive 的 core 。
+  * 對於硬體即時系統，分派潛伏期通常是以幾微秒為單位。
+  * 衝突相位 (conflict phase) 的兩個成分
+    1. 任何在 core 執行的 process 為 preemptive
+    2. 低優先權 process 釋出高優先權 process 需要的資源
+  * 在衝突期間後，分派階段會將高優先權 process 排班到可使用的 CPU 上。
+
+<div style="text-align:center">
+    <img src="../img/0518 - Interrupt latency.png" alt= "0518 - Interrupt latency.png" width="50%">
+    <p>中斷潛伏期</p>
+</div>
+
+<div style="text-align:center">
+    <img src="../img/0519 - Dispatch latency.png" alt= "0519 - Dispatch latency.png" width="50%">
+    <p>分派潛伏期</p>
+</div>
+
+### 5.6.2 以優先權為基礎的排班 (Priority-Based Scheduling) ###
+
+### 5.6.3 單調速率排班法 (Rate-Monotonic Scheduling) ###
+
+### 5.6.4 最早截止期限優先排班法 (Earliest-Deadline-First Scheduling) ###
+
+### 5.6.5 比例分享排班法 (Proportional Share Scheduling) ###
+
+### 5.6.6 POSIX 即時排班法 (POSIX Real-Time Scheduling) ###
+
 ## 5.7 作業系統範例 (Operating-System Examples) ##
+
+* 在描述 Solaris 和 Windows 系統的 process scheduling 策略時，是使用 kernel threads 的排班；而在討論 Linux 排班器時，使用 task 這個名稱。
+
+### 5.7.1 範例:Linux Scheduling ###
+
+* 在 v2.5 前 ，Linux kernel 執行傳統 UNIX 排班演算法的變化。但是這種演算法並不是以 SMP 系統為考慮所設計，它沒有充分支援 multi-core 的系統。
+* 在 v2.5 ，Linux kernel 被修改，並包含一個被稱為 O(1) 的排班演算法。
+* 在 v2.6 的 kernel 開發期間，排班器再次被修改；在 v2.6.23 版發佈的 kernel，完全公平排班器 (completely fair scheduler, CFS) 變成預設的 Linux 排班演算法。
+
+### 5.7.2 範例:Windows Scheduling ###
+
+### 5.7.3 範例:Solaris Scheduling ###
 
 ## 5.8 演算法的評估 (Algorithm Evaluation) ##
 
+### 5.8.1 確定性模型化 (Deterministic Modeling) ###
+
+### 5.8.2 佇列模式 (Queueing Models) ###
+
+### 5.8.3 模擬 (Simulations) ###
+
+### 5.8.4 實作 (Implementation) ###
+
 ## 5.9 摘要 (Summary) ##
+
+* CPU scheduling 是從 ready queue 選擇一個正在等待中的 process 並配置給 CPU。分派器配置許出的 process 給 CPU。
+* Scheduling algorithms 可以是 preemptive 或 nonpreemptive。幾乎所有現在 OS 都是 preemptive。
+* Scheduling 演算法可以根據 5 個條件作評估:(1)CPU utilization, (2)throughput, (3)turnaround time, (4)waiting time, (5)response time 。
