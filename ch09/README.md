@@ -78,6 +78,34 @@
     <p>使用基底和界線暫存器的硬體位址保護</p>
 </div>
 
+### 9.1.2 位址連結 (Address Binding) ###
+
+* programs 通常以二進制可執行檔的形式儲存於磁碟上。當要執行 programs 時，必須將它載入 memory ，並放置於 process context 中，該 program 才能被可用的 CPU 執行。
+* user program 在被執行前要通過好幾個步驟，在這些步驟中，addresses 可以不同的方式來表示。在 source program 中，addresses 通常是符號化的，例如變數 count 。
+* compiler 通常將這些符號化的位址 (symbolic addresses) 連結 (bind) 至可重新定位的位址 ( relocatable addresses) ，例如"離這個模組的開始處 14 個 bytes "。
+* 鏈結器 (linker) 和載入器 (loader) 再依序將 relocatable addresses 連結至 absolute addresses (ex. 74014) 。 每次的連結都是從一個 address space mapping 到另一個 address space 。
+* 傳統上， instructions 和 data 之於 memory addresses 的連結可以在以下步驟中完成
+  * 編譯時間 (compiler time)
+    * 在 compile time 時，若已確知 program 在 memory 中的位址， 絕對碼 (absolute code) 即可產生。
+  * 載入時間 (load time)
+    * process 如果在編譯時間若不能確定在 memory 中的 address ，則 compiler 就必須產生可重定位程式碼 (relocatable code) 。
+  * 執行時間 (execution time)
+
+<div style="text-align:center">
+    <img src="../img/0903 - Multistep processing of a user program.png" alt= "0903 - Multistep processing of a user program.png" width="40%">
+    <p>使用基底和界線暫存器的硬體位址保護</p>
+</div>
+
+### 9.1.3 邏輯位址空間和實體位址空間 (Logical Versus Physical Address Space) ###
+
+* CPU 產生的位址通常稱為邏輯位址 (logical address) ； 而記憶體單元看到的地址 - 也就是載入到記憶體的記憶體位址站存器 (memory-address register) 之數值，通常叫做實體位址 (physical address) 。
+* 
+
+<div style="text-align:center">
+    <img src="../img/0904 - Memory management unit (MMU).png" alt= "0904 - Memory management unit (MMU).png" width="60%">
+    <p>記憶體管理單元 (MMU) </p>
+</div>
+
 ## 9.2 連續記憶體配置 (Contiguous Memory Allocation) ##
 
 ## 9.3 分頁 (Paging) ##
